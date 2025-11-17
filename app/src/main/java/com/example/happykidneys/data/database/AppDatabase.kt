@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 @Database(
     entities = [User::class, WaterIntake::class, Goal::class, FoodBeverage::class],
-    version = 2,  // Increment version since we added a new entity
+    version = 3, // This version is correct
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -42,23 +42,30 @@ abstract class AppDatabase : RoomDatabase() {
                     "happy_kidneys_database"
                 )
                     .fallbackToDestructiveMigration()
-                    .addCallback(DatabaseCallback())
+                    // Pass the context to the callback
+                    .addCallback(DatabaseCallback(context.applicationContext))
                     .build()
                 INSTANCE = instance
                 instance
             }
         }
 
-        private class DatabaseCallback : RoomDatabase.Callback() {
+        // --- THIS CALLBACK IS NOW FIXED ---
+        private class DatabaseCallback(
+            private val context: Context // <-- 1. Take context
+        ) : RoomDatabase.Callback() {
+
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
-                INSTANCE?.let { database ->
-                    CoroutineScope(Dispatchers.IO).launch {
-                        populateFoodBeverageData(database.foodBeverageDao())
-                    }
+                // 2. Launch a coroutine
+                CoroutineScope(Dispatchers.IO).launch {
+                    // 3. Get the database instance (it's now safe to do so)
+                    val dao = getDatabase(context).foodBeverageDao()
+                    populateFoodBeverageData(dao)
                 }
             }
         }
+        // --- END FIX ---
 
         private suspend fun populateFoodBeverageData(dao: FoodBeverageDao) {
             try {

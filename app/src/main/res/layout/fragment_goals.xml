@@ -46,14 +46,14 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:layout_marginTop="20dp"
                     android:gravity="center_vertical">
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilGoal"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:hint="@string/amount"
@@ -70,11 +70,23 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnSetGoal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Set Manual Goal"
+                        app:layout_constraintTop_toBottomOf="@id/etGoal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnCalculateGoal"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
                         android:layout_width="wrap_content"
-                        android:layout_height="56dp"
-                        android:text="@string/set_goal"
-                        android:layout_marginStart="12dp"
-                        app:cornerRadius="12dp"/>
+                        android:layout_height="wrap_content"
+                        android:text="Not sure? Calculate your goal"
+                        app:layout_constraintTop_toBottomOf="@id/btnSetGoal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginTop="8dp"/>
 
                 </LinearLayout>
 

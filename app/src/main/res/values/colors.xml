@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Primary Colors -->
-    <color name="primary_blue">#4A90E2</color>
+    <color name="primary_blue">#3EAFDE</color>
+
+    <color name="primary_blue_dark">#1A6A9C</color>
     <color name="primary_blue_light">#A4D7E1</color>
-    <color name="primary_blue_dark">#2E6BC1</color>
 
     <!-- Accent Colors -->
     <color name="accent_green">#7ED321</color>

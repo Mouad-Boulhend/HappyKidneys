@@ -17,4 +17,8 @@ class FoodBeverageRepository(private val foodBeverageDao: FoodBeverageDao) {
     suspend fun insertAll(items: List<FoodBeverage>) = foodBeverageDao.insertAll(items)
 
     suspend fun getCount(): Int = foodBeverageDao.getCount()
+
+    suspend fun getItemById(id: Long): FoodBeverage? {
+        return foodBeverageDao.getItemById(id)
+    }
 }

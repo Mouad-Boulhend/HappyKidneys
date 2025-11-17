@@ -1,38 +1,28 @@
 package com.example.happykidneys.ui.dashboard
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
+import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.happykidneys.R
 import com.example.happykidneys.data.database.AppDatabase
-import com.example.happykidneys.data.database.entities.FoodBeverage
 import com.example.happykidneys.data.repository.FoodBeverageRepository
 import com.example.happykidneys.databinding.FragmentFoodBeverageSelectionBinding
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
-import java.util.*
 
-class FoodBeverageDialogFragment : DialogFragment() {
+class AddFoodTabFragment : Fragment() {
 
     private var _binding: FragmentFoodBeverageSelectionBinding? = null
     private val binding get() = _binding!!
     private lateinit var repository: FoodBeverageRepository
     private lateinit var adapter: FoodBeverageAdapter
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return Dialog(requireContext(), com.google.android.material.R.style.Theme_MaterialComponents_Dialog).apply {
-            window?.setBackgroundDrawableResource(android.R.color.transparent)
-        }
-    }
-
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFoodBeverageSelectionBinding.inflate(inflater, container, false)
@@ -45,41 +35,44 @@ class FoodBeverageDialogFragment : DialogFragment() {
         val database = AppDatabase.getDatabase(requireContext())
         repository = FoodBeverageRepository(database.foodBeverageDao())
 
-        setupRecyclerView()
+        setupRecyclerView() // <-- We will modify this function
         setupSearch()
         setupCategoryFilters()
         loadAllItems()
-    }
 
-    override fun onStart() {
-        super.onStart()
-        dialog?.window?.setLayout(
-            (resources.displayMetrics.widthPixels * 0.95).toInt(),
-            (resources.displayMetrics.heightPixels * 0.85).toInt()
-        )
+        // --- THIS IS THE NEW PART ---
+        // Listen for the result from our new QuantitySelectionDialogFragment
+        childFragmentManager.setFragmentResultListener(QuantitySelectionDialogFragment.REQUEST_KEY, viewLifecycleOwner) { requestKey, bundle ->
+            val waterAmount = bundle.getFloat("waterAmount")
+            if (waterAmount > 0) {
+                // Now, send this final amount up to the main dialog
+                val result = Bundle().apply {
+                    putFloat("waterAmount", waterAmount)
+                }
+                parentFragmentManager.setFragmentResult("intakeRequest", result)
+            }
+        }
     }
 
     private fun setupRecyclerView() {
+        // --- THIS CLICK LISTENER IS NOW DIFFERENT ---
         adapter = FoodBeverageAdapter { item ->
-            // Create a simple "Bundle" with the data we want to send back
-            val result = Bundle().apply {
-                // DashboardFragment only needs the water amount
-                item.waterInLiters?.let { putFloat("waterAmount", it) }
-            }
-
-            // Send the result to the fragment that opened this dialog
-            parentFragmentManager.setFragmentResult("foodSelectionRequest", result)
-
-            dismiss()
+            // Instead of sending the result, we now open the new dialog
+            val dialog = QuantitySelectionDialogFragment.newInstance(item.id)
+            dialog.show(childFragmentManager, QuantitySelectionDialogFragment.TAG)
         }
+
         binding.rvItems.apply {
             layoutManager = GridLayoutManager(requireContext(), 2)
-            adapter = this@FoodBeverageDialogFragment.adapter
+            adapter = this@AddFoodTabFragment.adapter
         }
     }
 
+    // --- All other functions (setupSearch, setupCategoryFilters, loadAllItems, etc.) ---
+    // --- are exactly the same. No changes needed to them. ---
+
     private fun setupSearch() {
-        binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
 
             override fun onQueryTextChange(newText: String?): Boolean {

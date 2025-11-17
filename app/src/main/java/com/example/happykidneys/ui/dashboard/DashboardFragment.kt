@@ -32,8 +32,15 @@ import com.example.happykidneys.utils.PreferenceManager
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import com.example.happykidneys.data.repository.GoalRepository
+import kotlinx.coroutines.flow.first
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 
-class DashboardFragment : Fragment() {
+class DashboardFragment : Fragment(), SensorEventListener {
 
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
@@ -41,6 +48,11 @@ class DashboardFragment : Fragment() {
     private lateinit var preferenceManager: PreferenceManager
     private lateinit var intakeAdapter: WaterIntakeAdapter
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private lateinit var goalRepository: GoalRepository
+    private lateinit var sensorManager: SensorManager
+    private var rotationSensor: Sensor? = null
+    private val rotationMatrix = FloatArray(9)
+    private val orientationAngles = FloatArray(3)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,12 +68,59 @@ class DashboardFragment : Fragment() {
 
         val database = AppDatabase.getDatabase(requireContext())
         waterIntakeRepository = WaterIntakeRepository(database.waterIntakeDao())
+        goalRepository = GoalRepository(database.goalDao())
         preferenceManager = PreferenceManager(requireContext())
 
         setupRecyclerView()
         setupChart()
         setupListeners()
+
+
+        // This listens for the final result from AddIntakeDialogFragment
+        parentFragmentManager.setFragmentResultListener("addIntakeResult", viewLifecycleOwner) { requestKey, bundle ->
+            val waterAmount = bundle.getFloat("waterAmount")
+            if (waterAmount > 0) {
+                addWater(waterAmount) // Call your existing addWater function
+            }
+        }
+
+        sensorManager = requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        // Use Rotation Vector for a more stable reading than accelerometer/gyroscope alone
+        rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
+    }
+
+    override fun onResume() {
+        super.onResume()
         loadData()
+
+        // Start listening for sensor updates when the fragment is visible
+        rotationSensor?.let {
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_UI)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        // Stop listening when the fragment is not visible to save battery
+        sensorManager.unregisterListener(this)
+    }
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        if (event?.sensor?.type == Sensor.TYPE_ROTATION_VECTOR) {
+            SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
+            SensorManager.getOrientation(rotationMatrix, orientationAngles)
+
+            val roll = orientationAngles[2] // Side-to-side tilt
+
+            // Set rotation with reduced sensitivity
+            binding.fillingGlassView.setPhoneRotation(roll * 0.8f)
+        }
+    }
+
+    // --- ADD THIS NEW FUNCTION (for SensorEventListener) ---
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+        // Not needed for this, but required by the interface
     }
 
     private fun setupRecyclerView() {
@@ -102,7 +161,8 @@ class DashboardFragment : Fragment() {
 
     private fun setupListeners() {
         binding.fabAdd.setOnClickListener {
-            showAddWaterDialog()
+            // Show the new tabbed dialog
+            AddIntakeDialogFragment().show(parentFragmentManager, AddIntakeDialogFragment.TAG)
         }
     }
 
@@ -118,8 +178,12 @@ class DashboardFragment : Fragment() {
                 binding.tvTodayConsumption.text = String.format("%.1f L", currentTotal)
 
                 val percentage = (currentTotal / dailyGoal * 100).toInt()
-                binding.progressBar.progress = percentage.coerceAtMost(100)
+
                 binding.tvGoalProgress.text = "$percentage% of ${dailyGoal}L goal"
+
+                // Post the UI update to the view's message queue.
+                // This ensures the container has a measured height.
+                binding.fillingGlassView.setPercentage(percentage)
             }
         }
 
@@ -132,6 +196,9 @@ class DashboardFragment : Fragment() {
 
         // Load weekly data
         loadWeeklyData(userId)
+
+        // Load streak data
+        loadStreakData(userId)
     }
 
     private fun loadWeeklyData(userId: Long) {
@@ -159,9 +226,60 @@ class DashboardFragment : Fragment() {
 
         lifecycleScope.launch {
             waterIntakeRepository.getWeeklyIntakes(userId, startDate).collect { weeklyData ->
+                // Calculate average
+                val totalIntake = weeklyData.sumOf { it.total.toDouble() }
+                // We divide by 7, as it's a 7-day period
+                val average = if (totalIntake == 0.0) 0.0 else totalIntake / 7.0
+                binding.tvWeeklyAverage.text = String.format("%.1f L", average)
+
                 // Pass the DB data AND the lists we just generated
                 updateChart(weeklyData, lastSevenDays, dayLabels)
             }
+        }
+    }
+
+    private fun loadStreakData(userId: Long) {
+        lifecycleScope.launch {
+            // Get the full history, just once
+            val goals = goalRepository.getAllGoals(userId).first()
+
+            // Create a lookup map (Date String -> Goal)
+            val goalMap = goals.associateBy { it.date }
+
+            var streakCount = 0
+            val calendar = Calendar.getInstance()
+
+            // Check if today's goal (if it exists) is failed.
+            // If so, the streak is 0.
+            val todayString = dateFormat.format(calendar.time)
+            if (goalMap[todayString]?.achieved == false) {
+                binding.tvStreak.text = "0"
+                return@launch
+            }
+
+            // If today is not failed (it's either null or achieved),
+            // we start counting from today and go backwards.
+            for (i in 0..365) { // Limit to a 1-year streak check
+                val dateString = dateFormat.format(calendar.time)
+                val goal = goalMap[dateString]
+
+                if (goal != null && goal.achieved) {
+                    // Day was achieved, add to streak
+                    streakCount++
+                } else if (goal == null && i == 0) {
+                    // It's today and no goal is logged yet.
+                    // This doesn't break the streak, so just continue to yesterday.
+                } else {
+                    // Day was not achieved, or no goal was logged for a past day.
+                    // The streak is broken.
+                    break
+                }
+
+                // Move calendar to the previous day
+                calendar.add(Calendar.DAY_OF_YEAR, -1)
+            }
+
+            binding.tvStreak.text = streakCount.toString()
         }
     }
 
@@ -195,123 +313,7 @@ class DashboardFragment : Fragment() {
         binding.barChart.invalidate() // Refresh the chart
     }
 
-    private fun showAddWaterDialog() {
-        val dialog = Dialog(requireContext())
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.dialog_add_water)
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
 
-        val etAmount = dialog.findViewById<TextInputEditText>(R.id.etAmount)
-        val btnAdd = dialog.findViewById<MaterialButton>(R.id.btnAdd)
-        val btnCancel = dialog.findViewById<MaterialButton>(R.id.btnCancel)
-        val btn250 = dialog.findViewById<MaterialCardView>(R.id.btn250ml)
-        val btn500 = dialog.findViewById<MaterialCardView>(R.id.btn500ml)
-        val btn1000 = dialog.findViewById<MaterialCardView>(R.id.btn1000ml)
-        val btnOrange = dialog.findViewById<MaterialCardView>(R.id.btnOrange)
-        val btnWatermelon = dialog.findViewById<MaterialCardView>(R.id.btnWatermelon)
-        val btnCoffee = dialog.findViewById<MaterialCardView>(R.id.btnCoffee)
-
-        btn250.setOnClickListener {
-            addWater(0.25f)
-            dialog.dismiss()
-        }
-
-        btn500.setOnClickListener {
-            addWater(0.5f)
-            dialog.dismiss()
-        }
-
-        btn1000.setOnClickListener {
-            addWater(1.0f)
-            dialog.dismiss()
-        }
-
-        btnOrange.setOnClickListener {
-            showCustomAmountDialog("Orange", "grams", 0.87f) // 87% water content
-            dialog.dismiss()
-        }
-
-        btnWatermelon.setOnClickListener {
-            showCustomAmountDialog("Watermelon", "grams", 0.92f) // 92% water content
-            dialog.dismiss()
-        }
-
-        btnCoffee.setOnClickListener {
-            showCustomAmountDialog("Coffee", "ml", 0.99f) // 99% water content
-            dialog.dismiss()
-        }
-
-        btnAdd.setOnClickListener {
-            val amountText = etAmount.text.toString()
-            if (amountText.isNotEmpty()) {
-                val amount = amountText.toFloatOrNull()
-                if (amount != null && amount > 0) {
-                    addWater(amount)
-                    dialog.dismiss()
-                } else {
-                    Toast.makeText(requireContext(), "Invalid amount", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-
-        btnCancel.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialog.show()
-    }
-
-    private fun showCustomAmountDialog(itemName: String, unit: String, waterPercentage: Float) {
-        val customDialog = Dialog(requireContext())
-        customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-
-        val dialogView = LayoutInflater.from(requireContext())
-            .inflate(R.layout.dialog_custom_amount, null)
-        customDialog.setContentView(dialogView)
-        customDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-
-        val tvTitle = dialogView.findViewById<TextView>(R.id.tvDialogTitle)
-        val tilAmount = dialogView.findViewById<TextInputLayout>(R.id.tilCustomAmount)
-        val etAmount = dialogView.findViewById<TextInputEditText>(R.id.etCustomAmount)
-        val btnConfirm = dialogView.findViewById<MaterialButton>(R.id.btnConfirm)
-        val btnCancel = dialogView.findViewById<MaterialButton>(R.id.btnCancelCustom)
-
-        tvTitle.text = "How much $itemName?"
-        tilAmount.suffixText = " $unit"
-        tilAmount.hint = "Amount in $unit"
-
-        btnConfirm.setOnClickListener {
-            val amountText = etAmount.text.toString()
-            if (amountText.isNotEmpty()) {
-                val amount = amountText.toFloatOrNull()
-                if (amount != null && amount > 0) {
-                    // Convert to liters
-                    val waterAmount = if (unit == "ml") {
-                        amount / 1000f * waterPercentage
-                    } else {
-                        // grams
-                        amount / 1000f * waterPercentage
-                    }
-                    addWater(waterAmount)
-                    customDialog.dismiss()
-                } else {
-                    Toast.makeText(requireContext(), "Invalid amount", Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                Toast.makeText(requireContext(), "Please enter an amount", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        btnCancel.setOnClickListener {
-            customDialog.dismiss()
-        }
-
-        customDialog.show()
-    }
 
     private fun addWater(amount: Float) {
         val userId = preferenceManager.getUserId()

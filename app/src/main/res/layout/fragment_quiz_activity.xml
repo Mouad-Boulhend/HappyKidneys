@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="How active are you?"
+        android:textSize="24sp"
+        android:textColor="@color/text_primary"
+        android:fontFamily="sans-serif-medium"/>
+
+    <RadioGroup
+        android:id="@+id/rgActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp">
+
+        <RadioButton
+            android:id="@+id/rbSedentary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sedentary"
+            android:checked="true"
+            android:layout_marginBottom="8dp"/>
+
+        <RadioButton
+            android:id="@+id/rbModerate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Moderately Active"
+            android:layout_marginBottom="8dp"/>
+
+        <RadioButton
+            android:id="@+id/rbActive"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Very Active"/>
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="32dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBack"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Back"
+            android:layout_marginEnd="8dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNext"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Next"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
+</LinearLayout>

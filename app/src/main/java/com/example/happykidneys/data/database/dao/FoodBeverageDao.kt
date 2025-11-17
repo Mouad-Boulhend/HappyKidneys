@@ -21,4 +21,9 @@ interface FoodBeverageDao {
 
     @Query("SELECT COUNT(*) FROM food_beverages")
     suspend fun getCount(): Int
+
+    @Query("SELECT * FROM food_beverages WHERE id = :id LIMIT 1")
+    suspend fun getItemById(id: Long): FoodBeverage?
+
+
 }

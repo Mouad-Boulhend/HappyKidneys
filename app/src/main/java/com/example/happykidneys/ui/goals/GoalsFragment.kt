@@ -19,6 +19,8 @@ import com.example.happykidneys.utils.PreferenceManager
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlinx.coroutines.flow.firstOrNull
+import android.content.Intent
 
 class GoalsFragment : Fragment() {
 
@@ -51,6 +53,11 @@ class GoalsFragment : Fragment() {
 
         setupRecyclerView()
         setupListeners()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
         loadData()
     }
 
@@ -74,6 +81,10 @@ class GoalsFragment : Fragment() {
                 }
             }
         }
+        binding.btnCalculateGoal.setOnClickListener {
+            val intent = Intent(requireContext(), GoalCalculatorActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun loadData() {
@@ -91,7 +102,8 @@ class GoalsFragment : Fragment() {
                 updateProgress(currentTotal, dailyGoal)
 
                 // Update today's goal in database
-                updateTodayGoalInBackground(userId, today, currentTotal, dailyGoal)
+                // This is now a 'suspend' call, not a new 'launch'
+                updateTodayGoal(userId, today, currentTotal, dailyGoal)
             }
         }
 
@@ -115,29 +127,27 @@ class GoalsFragment : Fragment() {
         }
     }
 
-    private fun updateTodayGoalInBackground(userId: Long, today: String, currentAmount: Float, targetAmount: Float) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            val achieved = currentAmount >= targetAmount
+    private suspend fun updateTodayGoal(userId: Long, today: String, currentAmount: Float, targetAmount: Float) {
+        val achieved = currentAmount >= targetAmount
 
-            // Check if goal exists for today
-            var goalExists = false
-            goalRepository.getGoalForDate(userId, today).collect { existingGoal ->
-                if (existingGoal == null && !goalExists) {
-                    // Create new goal only if it doesn't exist
-                    val goal = Goal(
-                        userId = userId,
-                        targetAmount = targetAmount,
-                        date = today,
-                        achieved = achieved,
-                        actualAmount = currentAmount
-                    )
-                    goalRepository.insert(goal)
-                    goalExists = true
-                } else if (existingGoal != null) {
-                    // Update existing goal
-                    goalRepository.updateGoalProgress(userId, today, currentAmount, achieved)
-                    goalExists = true
-                }
+        // Use firstOrNull() to get the current value ONCE and then stop
+        val existingGoal = goalRepository.getGoalForDate(userId, today).firstOrNull()
+
+        if (existingGoal == null) {
+            // Create new goal
+            val goal = Goal(
+                userId = userId,
+                targetAmount = targetAmount,
+                date = today,
+                achieved = achieved,
+                actualAmount = currentAmount
+            )
+            goalRepository.insert(goal)
+        } else {
+            // Update existing goal ONLY if the values have changed
+            // This saves pointless database writes
+            if (existingGoal.actualAmount != currentAmount || existingGoal.achieved != achieved) {
+                goalRepository.updateGoalProgress(userId, today, currentAmount, achieved)
             }
         }
     }

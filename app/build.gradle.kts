@@ -77,6 +77,8 @@ dependencies {
     // Lottie
     implementation("com.airbnb.android:lottie:6.1.0")
 
+    implementation("androidx.fragment:fragment-ktx:1.8.2")
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
