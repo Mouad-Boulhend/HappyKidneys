@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">Reins Heureux</string>
+    <string name="stay_hydrated_stay_healthy">Restez hydraté, restez en bonne santé</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title_1">Suivez votre consommation d\'eau</string>
+    <string name="onboarding_desc_1">Surveillez votre consommation d\'eau quotidienne et développez des habitudes d\'hydratation saines</string>
+    <string name="onboarding_title_2">Définir des objectifs personnels</string>
+    <string name="onboarding_desc_2">Définissez vos objectifs de consommation d\'eau quotidienne et suivez vos progrès sans effort</string>
+    <string name="onboarding_title_3">Recevez des rappels intelligents</string>
+    <string name="onboarding_desc_3">Recevez des rappels personnalisés pour rester hydraté tout au long de la journée</string>
+    <string name="next">Suivant</string>
+    <string name="skip">Passer</string>
+    <string name="get_started">Commencer</string>
+    <string name="onboarding_image">Illustration d\'intégration</string>
+
+    <!-- Authentication -->
+    <string name="login">Connexion</string>
+    <string name="register">S\'inscrire</string>
+    <string name="email">E-mail</string>
+    <string name="password">Mot de passe</string>
+    <string name="username">Nom d\'utilisateur</string>
+    <string name="birthday">Date de naissance (JJ/MM/AAAA)</string>
+    <string name="login_success">Connexion réussie!</string>
+    <string name="register_success">Compte créé avec succès!</string>
+    <string name="invalid_credentials">E-mail ou mot de passe invalide</string>
+    <string name="email_exists">E-mail déjà enregistré</string>
+    <string name="age_requirement">Vous devez avoir au moins 18 ans</string>
+    <string name="fill_all_fields">Veuillez remplir tous les champs</string>
+    <string name="invalid_email">Veuillez entrer un e-mail valide</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard">Tableau de bord</string>
+    <string name="consumed_today">consommé aujourd\'hui</string>
+    <string name="weekly_avg">Moy. Hebdo</string>
+    <string name="day_streak">Série de jours</string>
+    <string name="weekly_overview">Aperçu hebdomadaire</string>
+    <string name="today_entries">Entrées d\'aujourd\'hui</string>
+    <string name="add_water">Ajouter de l\'eau</string>
+    <string name="water_icon">Icône d\'eau</string>
+    <string name="no_entries_today">Aucune entrée pour le moment. Appuyez sur + pour ajouter!</string>
+
+    <!-- Goals -->
+    <string name="goals">Objectifs</string>
+    <string name="daily_goal">Objectif quotidien</string>
+    <string name="set_goal">Définir l\'objectif</string>
+    <string name="goal_progress">Progression de l\'objectif</string>
+    <string name="history">Historique</string>
+    <string name="achieved">Atteint</string>
+    <string name="not_achieved">Non atteint</string>
+    <string name="goal_reached">Félicitations! Objectif atteint!</string>
+    <string name="liters">Litres</string>
+
+    <!-- Tips -->
+    <string name="tips">Conseils d\'hydratation</string>
+    <string name="tip_title_1">Commencez bien votre journée</string>
+    <string name="tip_desc_1">Buvez un verre d\'eau immédiatement après votre réveil pour stimuler votre métabolisme</string>
+    <string name="tip_title_2">Avant chaque repas</string>
+    <string name="tip_desc_2">Prenez un verre d\'eau 30 minutes avant les repas pour faciliter la digestion</string>
+    <string name="tip_title_3">Hydratation pendant l\'exercice</string>
+    <string name="tip_desc_3">Buvez de l\'eau avant, pendant et après l\'activité physique</string>
+    <string name="tip_title_4">Écoutez votre corps</string>
+    <string name="tip_desc_4">La soif est un signe de déshydratation. N\'attendez pas d\'avoir soif</string>
+    <string name="tip_title_5">Surveillez votre urine</string>
+    <string name="tip_desc_5">Une urine jaune clair indique une bonne hydratation; jaune foncé signifie boire plus d\'eau</string>
+    <string name="share_tip">Partager le conseil</string>
+
+    <!-- Profile -->
+    <string name="profile">Profil</string>
+    <string name="my_account">Mon compte</string>
+    <string name="account_details">Détails du compte</string>
+    <string name="settings">Paramètres</string>
+    <string name="notifications">Notifications</string>
+    <string name="reminder_frequency">Fréquence des rappels</string>
+    <string name="language">Langue</string>
+    <string name="logout">Déconnexion</string>
+    <string name="confirm_logout">Êtes-vous sûr de vouloir vous déconnecter?</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+
+    <!-- Add Water Dialog -->
+    <string name="add_water_intake">Ajouter une consommation d\'eau</string>
+    <string name="amount">Quantité (L)</string>
+    <string name="quick_add">Ajout rapide</string>
+    <string name="custom_amount">Quantité personnalisée</string>
+    <string name="add">Ajouter</string>
+    <string name="cancel">Annuler</string>
+    <string name="water_added">Consommation d\'eau ajoutée!</string>
+
+    <!-- Days of Week -->
+    <string name="monday">Lun</string>
+    <string name="tuesday">Mar</string>
+    <string name="wednesday">Mer</string>
+    <string name="thursday">Jeu</string>
+    <string name="friday">Ven</string>
+    <string name="saturday">Sam</string>
+    <string name="sunday">Dim</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Rappels d\'hydratation</string>
+    <string name="notification_channel_desc">Rappels pour boire de l\'eau</string>
+    <string name="notification_title">Il est temps de s\'hydrater!</string>
+    <string name="notification_text">N\'oubliez pas de boire de l\'eau et de rester en bonne santé</string>
+
+    <!-- Errors -->
+    <string name="error_generic">Une erreur s\'est produite. Veuillez réessayer.</string>
+    <string name="error_network">Erreur réseau. Vérifiez votre connexion.</string>
+
+    <!-- Misc -->
+    <string name="loading">Chargement…</string>
+    <string name="save">Enregistrer</string>
+    <string name="delete">Supprimer</string>
+    <string name="edit">Modifier</string>
+
+    <!-- Food & Beverages -->
+    <string name="water">Eau</string>
+    <string name="food_beverage">Nourriture et boissons</string>
+    <string name="search_items">Rechercher aliments et boissons</string>
+    <string name="all_items">Tous les articles</string>
+    <string name="beverages">Boissons</string>
+    <string name="fruits">Fruits</string>
+    <string name="vegetables">Légumes</string>
+    <string name="meals">Repas</string>
+    <string name="water_content">Teneur en eau: %1$d%%</string>
+    <string name="contributes_water">Contribue %1$.2fL d\'eau</string>
+</resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors -->
+    <color name="primary_blue">#4A90E2</color>
+    <color name="primary_blue_light">#A4D7E1</color>
+    <color name="primary_blue_dark">#2E6BC1</color>
+
+    <!-- Accent Colors -->
+    <color name="accent_green">#7ED321</color>
+    <color name="accent_orange">#FF9500</color>
+    <color name="progress_green">#4CAF50</color>
+    <color name="bottom_nav_color">#3B6CCA</color>
+
+    <!-- Background Colors -->
+    <color name="background_light">#F5F9FC</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#333333</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#BDBDBD</color>
+
+    <!-- Status Colors -->
+    <color name="success">#4CAF50</color>
+    <color name="error">#F44336</color>
+    <color name="warning">#FF9800</color>
+
+    <!-- Transparent -->
+    <color name="transparent">#00000000</color>
+</resources>
