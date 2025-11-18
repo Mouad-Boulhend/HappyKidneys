@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:clipChildren="false"
     android:clipToPadding="false"
+    android:background="@color/palette_alice_blue"
     >
 
     <androidx.core.widget.NestedScrollView
@@ -50,6 +51,7 @@
                         android:padding="24dp"
                         android:clipChildren="false"
                         android:clipToPadding="false"
+                        android:background="@color/palette_card_blue"
                         >
 
                         <com.example.happykidneys.ui.dashboard.FillingGlassView
@@ -111,7 +113,8 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:padding="16dp"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:background="@color/palette_card_blue">
 
                         <ImageView
                             android:layout_width="32dp"
@@ -155,7 +158,9 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:padding="16dp"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:background="@color/palette_card_blue"
+                        >
 
                         <ImageView
                             android:layout_width="32dp"
@@ -199,7 +204,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    android:background="@color/palette_card_blue"
+                    >
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -233,7 +240,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    android:background="@color/palette_card_blue"
+                    >
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -268,7 +277,7 @@
         android:src="@drawable/ic_add"
         android:contentDescription="@string/add_water"
         app:tint="@color/white"
-        app:backgroundTint="@color/accent_green"
+        app:backgroundTint="@color/palette_jungle_green"
         app:elevation="6dp"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

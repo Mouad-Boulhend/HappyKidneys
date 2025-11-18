@@ -54,6 +54,9 @@ class ProfileFragment : Fragment() {
         // Set notification switch
         binding.switchNotifications.isChecked = preferenceManager.isNotificationEnabled()
 
+        // Set Water Rotation switch
+        binding.switchWaterRotation.isChecked = preferenceManager.isWaterRotationEnabled()
+
         // Set language display
         val language = when (preferenceManager.getLanguage()) {
             "en" -> "English"
@@ -84,6 +87,11 @@ class ProfileFragment : Fragment() {
         // Logout button
         binding.btnLogout.setOnClickListener {
             showLogoutDialog()
+        }
+
+        // Water Rotation
+        binding.switchWaterRotation.setOnCheckedChangeListener { _, isChecked ->
+            preferenceManager.setWaterRotationEnabled(isChecked)
         }
     }
 

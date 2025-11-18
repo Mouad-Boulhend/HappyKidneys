@@ -84,4 +84,9 @@ class SplashActivity : AppCompatActivity() {
         finish()
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.lottieLoading.cancelAnimation()
+    }
 }

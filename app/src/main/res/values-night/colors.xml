@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+    DARK MODE OVERRIDES
+    These colors are used automatically when the phone is in Dark Mode.
+    -->
+
+    <!--
+    1. BACKGROUNDS
+    We change "Alice Blue" to a deep, dark blue-grey.
+    This feels like "deep water" and is easy on the eyes at night.
+    -->
+    <color name="palette_alice_blue">#0B1218</color>
+    <color name="palette_card_blue">#0F1921</color>
+    <color name="background_light">@color/palette_alice_blue</color>
+
+    <!--
+    2. SURFACES (Cards, Bottom Nav)
+    We change "White" to a dark grey. If we kept it white,
+    it would be blindingly bright against the dark background.
+    -->
+    <color name="white">#1E2830</color>
+
+    <!--
+    3. TEXT COLORS (Inverted)
+    "Eerie Black" becomes an off-white so text is readable.
+    -->
+    <color name="palette_eerie_black">#E6E6E6</color>
+    <color name="text_primary">#E6E6E6</color>
+    <color name="text_secondary">#B0B0B0</color>
+    <color name="text_hint">#808080</color>
+
+    <!--
+    4. ACCENTS
+    We keep your brand colors mostly the same, but "Bottom Nav"
+    usually needs to be lighter to show up on dark grey.
+    -->
+    <color name="bottom_nav_color">#8AB4F8</color>
+
+    <!-- Keep original palette definitions for reference, or map them if used directly -->
+    <color name="palette_jasmine">#F7D487</color>
+    <color name="palette_bittersweet">#FF6C61</color>
+    <color name="palette_tiffany_blue">#88E9E7</color>
+    <color name="palette_jungle_green">#19AD88</color>
+    <color name="palette_process_cyan">#20B8EA</color>
+
+    <color name="primary_blue">#3EAFDE</color>
+    <color name="primary_blue_dark">#1A6A9C</color>
+    <color name="primary_blue_light">#A4D7E1</color>
+
+    <color name="accent_green">#7ED321</color>
+    <color name="accent_orange">#FF9500</color>
+    <color name="progress_green">#4CAF50</color>
+
+    <color name="success">#4CAF50</color>
+    <color name="error">#CF6679</color> <!-- Slightly lighter red for dark mode visibility -->
+    <color name="warning">#FFB74D</color>
+    <color name="transparent">#00000000</color>
+
+</resources>

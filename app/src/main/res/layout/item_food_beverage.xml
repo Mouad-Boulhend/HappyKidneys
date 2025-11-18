@@ -14,7 +14,9 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="12dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:background="@color/palette_card_blue"
+        >
 
         <!-- Icon -->
         <ImageView

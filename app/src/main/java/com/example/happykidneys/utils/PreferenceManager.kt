@@ -20,6 +20,7 @@ class PreferenceManager(context: Context) {
         private const val KEY_NOTIFICATION_ENABLED = "notification_enabled"
         private const val KEY_REMINDER_INTERVAL = "reminder_interval"
         private const val KEY_LANGUAGE = "language"
+        private const val KEY_WATER_ROTATION_ENABLED = "water_rotation_enabled" // <-- ADD THIS
     }
 
     // Onboarding
@@ -101,5 +102,14 @@ class PreferenceManager(context: Context) {
 
     fun setLanguage(language: String) {
         prefs.edit().putString(KEY_LANGUAGE, language).apply()
+    }
+
+    // --- WaterRotationPhysics ---
+    fun isWaterRotationEnabled(): Boolean {
+        return prefs.getBoolean(KEY_WATER_ROTATION_ENABLED, true) // Default to true
+    }
+
+    fun setWaterRotationEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_WATER_ROTATION_ENABLED, enabled).apply()
     }
 }

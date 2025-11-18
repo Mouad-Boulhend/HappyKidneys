@@ -17,7 +17,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="24dp"
+            android:background="@color/palette_alice_blue"
+            >
 
             <!-- Title -->
             <TextView
@@ -38,7 +40,9 @@
                 app:tabGravity="fill"
                 app:tabIndicatorColor="@color/primary_blue"
                 app:tabSelectedTextColor="@color/primary_blue"
-                app:tabTextColor="@color/text_secondary">
+                app:tabTextColor="@color/text_secondary"
+                android:background="@color/palette_alice_blue"
+                >
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
