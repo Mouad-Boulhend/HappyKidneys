@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- App Name -->
-    <string name="app_name">الكلى السعيدة</string>
-    <string name="stay_hydrated_stay_healthy">ابقَ رطباً، ابقَ بصحة جيدة</string>
+    <string name="app_name">كلى سعيدة</string>
+    <string name="stay_hydrated_stay_healthy">حافظ على رطوبتك، حافظ على صحتك</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_title_1">تتبع استهلاك الماء</string>
-    <string name="onboarding_desc_1">راقب استهلاكك اليومي من الماء وابنِ عادات ترطيب صحية</string>
-    <string name="onboarding_title_2">حدد أهدافاً شخصية</string>
-    <string name="onboarding_desc_2">حدد أهداف استهلاك الماء اليومية وتتبع تقدمك بسهولة</string>
+    <string name="onboarding_title_1">تتبع استهلاكك للماء</string>
+    <string name="onboarding_desc_1">راقب استهلاكك اليومي للماء وابنِ عادات شرب صحية</string>
+    <string name="onboarding_title_2">حدد أهدافك الشخصية</string>
+    <string name="onboarding_desc_2">حدد أهدافك اليومية لشرب الماء وتتبع تقدمك بسهولة</string>
     <string name="onboarding_title_3">احصل على تذكيرات ذكية</string>
     <string name="onboarding_desc_3">احصل على تذكيرات مخصصة للبقاء رطباً طوال اليوم</string>
     <string name="next">التالي</string>
     <string name="skip">تخطي</string>
-    <string name="get_started">ابدأ</string>
-    <string name="onboarding_image">صورة توضيحية</string>
+    <string name="get_started">ابدأ الآن</string>
+    <string name="onboarding_image">صورة توضيحية للبداية</string>
 
     <!-- Authentication -->
     <string name="login">تسجيل الدخول</string>
@@ -25,7 +25,7 @@
     <string name="birthday">تاريخ الميلاد (يوم/شهر/سنة)</string>
     <string name="login_success">تم تسجيل الدخول بنجاح!</string>
     <string name="register_success">تم إنشاء الحساب بنجاح!</string>
-    <string name="invalid_credentials">بريد إلكتروني أو كلمة مرور غير صحيحة</string>
+    <string name="invalid_credentials">البريد الإلكتروني أو كلمة المرور غير صحيحة</string>
     <string name="email_exists">البريد الإلكتروني مسجل بالفعل</string>
     <string name="age_requirement">يجب أن يكون عمرك 18 عاماً على الأقل</string>
     <string name="fill_all_fields">يرجى ملء جميع الحقول</string>
@@ -33,38 +33,38 @@
 
     <!-- Dashboard -->
     <string name="dashboard">لوحة التحكم</string>
-    <string name="consumed_today">المستهلك اليوم</string>
-    <string name="weekly_avg">متوسط الأسبوع</string>
-    <string name="day_streak">سلسلة الأيام</string>
-    <string name="weekly_overview">نظرة عامة أسبوعية</string>
+    <string name="consumed_today">استهلكت اليوم</string>
+    <string name="weekly_avg">المعدل الأسبوعي</string>
+    <string name="day_streak">أيام متتالية</string>
+    <string name="weekly_overview">نظرة أسبوعية</string>
     <string name="today_entries">إدخالات اليوم</string>
     <string name="add_water">إضافة ماء</string>
     <string name="water_icon">أيقونة الماء</string>
-    <string name="no_entries_today">لا توجد إدخالات حتى الآن. اضغط + للإضافة!</string>
+    <string name="no_entries_today">لا توجد إدخالات اليوم. اضغط + للإضافة!</string>
 
     <!-- Goals -->
     <string name="goals">الأهداف</string>
     <string name="daily_goal">الهدف اليومي</string>
     <string name="set_goal">تحديد الهدف</string>
     <string name="goal_progress">تقدم الهدف</string>
-    <string name="history">التاريخ</string>
-    <string name="achieved">تم تحقيقه</string>
-    <string name="not_achieved">لم يتحقق</string>
+    <string name="history">السجل</string>
+    <string name="achieved">مكتمل</string>
+    <string name="not_achieved">غير مكتمل</string>
     <string name="goal_reached">تهانينا! تم تحقيق الهدف!</string>
     <string name="liters">لتر</string>
 
     <!-- Tips -->
-    <string name="tips">نصائح للترطيب</string>
+    <string name="tips">نصائح صحية</string>
     <string name="tip_title_1">ابدأ يومك بشكل صحيح</string>
-    <string name="tip_desc_1">اشرب كوب ماء فور استيقاظك لتنشيط عملية التمثيل الغذائي</string>
+    <string name="tip_desc_1">اشرب كوباً من الماء فور الاستيقاظ لتنشيط عملية الأيض</string>
     <string name="tip_title_2">قبل كل وجبة</string>
-    <string name="tip_desc_2">تناول كوب ماء قبل 30 دقيقة من الوجبات للمساعدة في الهضم</string>
+    <string name="tip_desc_2">اشرب كوباً من الماء قبل 30 دقيقة من وجبات الطعام للمساعدة في الهضم</string>
     <string name="tip_title_3">الترطيب أثناء التمرين</string>
     <string name="tip_desc_3">اشرب الماء قبل وأثناء وبعد النشاط البدني</string>
-    <string name="tip_title_4">استمع لجسمك</string>
+    <string name="tip_title_4">استمع لجسدك</string>
     <string name="tip_desc_4">العطش علامة على الجفاف. لا تنتظر حتى تشعر بالعطش</string>
-    <string name="tip_title_5">راقب بولك</string>
-    <string name="tip_desc_5">البول الأصفر الفاتح يدل على ترطيب جيد؛ الأصفر الداكن يعني اشرب المزيد من الماء</string>
+    <string name="tip_title_5">راقب لون البول</string>
+    <string name="tip_desc_5">البول الأصفر الفاتح يشير إلى ترطيب جيد؛ الأصفر الداكن يعني اشرب المزيد من الماء</string>
     <string name="share_tip">مشاركة النصيحة</string>
 
     <!-- Profile -->
@@ -76,21 +76,21 @@
     <string name="reminder_frequency">تكرار التذكير</string>
     <string name="language">اللغة</string>
     <string name="logout">تسجيل الخروج</string>
-    <string name="confirm_logout">هل أنت متأكد من رغبتك في تسجيل الخروج؟</string>
+    <string name="confirm_logout">هل أنت متأكد أنك تريد تسجيل الخروج؟</string>
     <string name="yes">نعم</string>
     <string name="no">لا</string>
 
     <!-- Add Water Dialog -->
-    <string name="add_water_intake">إضافة استهلاك الماء</string>
+    <string name="add_water_intake">إضافة كمية الماء</string>
     <string name="amount">الكمية (لتر)</string>
     <string name="quick_add">إضافة سريعة</string>
     <string name="custom_amount">كمية مخصصة</string>
     <string name="add">إضافة</string>
     <string name="cancel">إلغاء</string>
-    <string name="water_added">تمت إضافة استهلاك الماء!</string>
+    <string name="water_added">تمت إضافة الماء!</string>
 
     <!-- Days of Week -->
-    <string name="monday">الإثنين</string>
+    <string name="monday">الاثنين</string>
     <string name="tuesday">الثلاثاء</string>
     <string name="wednesday">الأربعاء</string>
     <string name="thursday">الخميس</string>
@@ -99,30 +99,31 @@
     <string name="sunday">الأحد</string>
 
     <!-- Notifications -->
-    <string name="notification_channel_name">تذكيرات الترطيب</string>
-    <string name="notification_channel_desc">تذكيرات لشرب الماء</string>
-    <string name="notification_title">حان وقت الترطيب!</string>
-    <string name="notification_text">لا تنسَ شرب الماء والبقاء بصحة جيدة</string>
+    <string name="notification_channel_name">تذكيرات شرب الماء</string>
+    <string name="notification_channel_desc">تذكيرات لشرب الماء بانتظام</string>
+    <string name="notification_title">وقت شرب الماء!</string>
+    <string name="notification_text">لا تنسَ شرب الماء للحفاظ على صحتك</string>
 
     <!-- Errors -->
-    <string name="error_generic">حدث خطأ. يرجى المحاولة مرة أخرى.</string>
+    <string name="error_generic">حدث خطأ ما. يرجى المحاولة مرة أخرى.</string>
     <string name="error_network">خطأ في الشبكة. تحقق من اتصالك.</string>
 
     <!-- Misc -->
-    <string name="loading">جارٍ التحميل…</string>
+    <string name="loading">جارٍ التحميل...</string>
     <string name="save">حفظ</string>
     <string name="delete">حذف</string>
     <string name="edit">تعديل</string>
 
     <!-- Food & Beverages -->
     <string name="water">ماء</string>
-    <string name="food_beverage">الطعام والمشروبات</string>
-    <string name="search_items">البحث عن الأطعمة والمشروبات</string>
-    <string name="all_items">جميع العناصر</string>
+    <string name="food_beverage">طعام وشراب</string>
+    <string name="search_items">البحث عن طعام أو شراب</string>
+    <string name="all_items">كل العناصر</string>
     <string name="beverages">مشروبات</string>
     <string name="fruits">فواكه</string>
     <string name="vegetables">خضروات</string>
     <string name="meals">وجبات</string>
     <string name="water_content">محتوى الماء: %1$d%%</string>
-    <string name="contributes_water">يساهم بـ %1$.2fL من الماء</string>
+    <string name="contributes_water">يساهم بـ %1$.2f لتر من الماء</string>
+    <string name="water_physics_increased_battery_usage">فيزياء الماء (زيادة استهلاك البطارية)</string>
 </resources>

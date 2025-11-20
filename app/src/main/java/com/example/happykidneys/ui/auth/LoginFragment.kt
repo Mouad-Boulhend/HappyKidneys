@@ -23,6 +23,10 @@ class LoginFragment : Fragment() {
     private lateinit var userRepository: UserRepository
     private lateinit var preferenceManager: PreferenceManager
 
+    // Variables to track debug taps
+    private var debugTapCount = 0
+    private var lastDebugTapTime: Long = 0
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,6 +53,26 @@ class LoginFragment : Fragment() {
 
             if (validateInputs(email, password)) {
                 performLogin(email, password)
+            }
+        }
+
+        // Triple-tap listener on the background container
+        binding.loginContainer.setOnClickListener {
+            val currentTime = System.currentTimeMillis()
+            // Check if the tap is within 500ms of the last one
+            if (currentTime - lastDebugTapTime < 500) {
+                debugTapCount++
+            } else {
+                debugTapCount = 1 // Reset count if too slow
+            }
+            lastDebugTapTime = currentTime
+
+            if (debugTapCount == 3) {
+                // Auto-fill credentials
+                binding.etEmail.setText("test@example.com")
+                binding.etPassword.setText("password123")
+                Toast.makeText(requireContext(), "Debug info filled!", Toast.LENGTH_SHORT).show()
+                debugTapCount = 0 // Reset counter
             }
         }
     }

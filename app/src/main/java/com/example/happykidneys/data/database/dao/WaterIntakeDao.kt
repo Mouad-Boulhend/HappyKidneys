@@ -18,7 +18,7 @@ interface WaterIntakeDao {
     @Query("SELECT date, SUM(amount) as total FROM water_intakes WHERE userId = :userId AND date >= :startDate GROUP BY date ORDER BY date")
     fun getWeeklyIntakes(userId: Long, startDate: String): Flow<List<DailyTotal>>
 
-    // efficiently gets the single most recent timestamp
+    // Efficiently gets the single most recent timestamp
     @Query("SELECT MAX(timestamp) FROM water_intakes WHERE userId = :userId")
     suspend fun getLastIntakeTimestamp(userId: Long): Long?
 

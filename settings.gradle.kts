@@ -17,4 +17,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Happy Kidneys"
 include(":app")
- 
+include(":wear")

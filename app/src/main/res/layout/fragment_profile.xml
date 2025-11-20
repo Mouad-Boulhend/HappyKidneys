@@ -268,7 +268,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Water Animation"
+                        android:text="@string/water_physics_increased_battery_usage"
                         android:textSize="16sp"
                         android:textColor="@color/text_primary"
                         android:layout_marginStart="16dp"/>

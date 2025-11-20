@@ -30,7 +30,7 @@ class HydrationReminderWorker(
     override suspend fun doWork(): Result {
         val preferenceManager = PreferenceManager(applicationContext)
 
-        // 1. Check Global Switch
+        // 1. Check if notifications are enabled
         if (!preferenceManager.isNotificationEnabled()) {
             return Result.success()
         }
@@ -43,31 +43,26 @@ class HydrationReminderWorker(
         }
 
         // 3. Check Last Intake Time
-        // We assume the interval is stored in hours (e.g., 2)
-        val intervalHours = preferenceManager.getReminderInterval()
-        val shouldNotify = checkShouldNotify(preferenceManager.getUserId(), intervalHours)
+        val userId = preferenceManager.getUserId()
+        if (userId == -1L) return Result.success()
 
-        if (shouldNotify) {
-            createNotificationChannel()
-            sendNotification(currentHour)
+        val database = AppDatabase.getDatabase(applicationContext)
+        val lastIntakeTimestamp = database.waterIntakeDao().getLastIntakeTimestamp(userId)
+
+        val intervalHours = preferenceManager.getReminderInterval()
+        val intervalMillis = TimeUnit.HOURS.toMillis(intervalHours.toLong())
+        val currentTime = System.currentTimeMillis()
+
+        // If user drank water recently (within the interval), don't notify
+        if (lastIntakeTimestamp != null && (currentTime - lastIntakeTimestamp) < intervalMillis) {
+            return Result.success()
         }
 
+        // 4. Send Notification
+        createNotificationChannel()
+        sendNotification(currentHour)
+
         return Result.success()
-    }
-
-    private suspend fun checkShouldNotify(userId: Long, intervalHours: Int): Boolean {
-        val database = AppDatabase.getDatabase(applicationContext)
-        val lastTimestamp = database.waterIntakeDao().getLastIntakeTimestamp(userId)
-
-        // If no intake ever recorded, notify
-        if (lastTimestamp == null) return true
-
-        val currentTime = System.currentTimeMillis()
-        val timeDiff = currentTime - lastTimestamp
-        val intervalMillis = TimeUnit.HOURS.toMillis(intervalHours.toLong())
-
-        // Notify only if the time passed is greater than the interval
-        return timeDiff >= intervalMillis
     }
 
     private fun createNotificationChannel() {
@@ -84,7 +79,7 @@ class HydrationReminderWorker(
         }
     }
 
-    private fun sendNotification(currentHour: Int) {
+    private fun sendNotification(hour: Int) {
         val intent = Intent(applicationContext, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -96,13 +91,12 @@ class HydrationReminderWorker(
             PendingIntent.FLAG_IMMUTABLE
         )
 
-        // 4. Dynamic Content based on Time of Day
-        val (title, text) = getNotificationContent(currentHour)
+        val (title, message) = getNotificationContent(hour)
 
         val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_water_drop_small)
+            .setSmallIcon(R.drawable.ic_water_drop_small) // Ensure you have this icon
             .setContentTitle(title)
-            .setContentText(text)
+            .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
@@ -114,18 +108,10 @@ class HydrationReminderWorker(
 
     private fun getNotificationContent(hour: Int): Pair<String, String> {
         return when (hour) {
-            in 6..11 -> {
-                "Good Morning! ☀️" to "Start your day right with a glass of water."
-            }
-            in 12..16 -> {
-                "Afternoon Boost 🚀" to "Feeling a dip in energy? Water might help!"
-            }
-            in 17..21 -> {
-                "Evening Hydration 🌙" to "You're doing great! Hit your goal before bed."
-            }
-            else -> {
-                "Hydration Time 💧" to "It's been a while. Time for a drink?"
-            }
+            in 7..11 -> "Good Morning! ☀️" to "Start your day right with a glass of water."
+            in 12..16 -> "Afternoon Boost 🚀" to "Stay energized! Time for some water."
+            in 17..21 -> "Evening Hydration 🌙" to "Don't forget to hydrate before bed."
+            else -> "Hydration Time 💧" to "It's time to drink some water!"
         }
     }
 }

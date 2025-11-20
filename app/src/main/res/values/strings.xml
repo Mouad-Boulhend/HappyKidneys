@@ -125,4 +125,5 @@
     <string name="meals">Meals</string>
     <string name="water_content">Water content: %1$d%%</string>
     <string name="contributes_water">Contributes %1$.2fL of water</string>
+    <string name="water_physics_increased_battery_usage">Water Physics (increased battery usage)</string>
 </resources>

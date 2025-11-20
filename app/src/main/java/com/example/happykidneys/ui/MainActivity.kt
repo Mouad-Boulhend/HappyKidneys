@@ -1,8 +1,13 @@
-// File: ui/MainActivity.kt
 package com.example.happykidneys.ui
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -10,13 +15,26 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.happykidneys.R
 import com.example.happykidneys.databinding.ActivityMainBinding
 import com.example.happykidneys.ui.dashboard.DashboardFragment
+import com.example.happykidneys.ui.goals.GoalsFragment
 import com.example.happykidneys.ui.profile.ProfileFragment
 import com.example.happykidneys.ui.tips.TipsFragment
-import com.example.happykidneys.ui.goals.GoalsFragment
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
+    // Register the permission launcher
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // Permission granted, notifications will work
+        } else {
+            // Permission denied. You might want to show a dialog explaining why it's needed,
+            // or just respect the user's choice.
+            Toast.makeText(this, "Notifications are disabled. You won't receive reminders.", Toast.LENGTH_LONG).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +43,22 @@ class MainActivity : AppCompatActivity() {
 
         setupViewPager()
         setupBottomNavigation()
+
+        // Check for notification permission
+        checkNotificationPermission()
+    }
+
+    private fun checkNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // Request the permission
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
     }
 
     private fun setupViewPager() {

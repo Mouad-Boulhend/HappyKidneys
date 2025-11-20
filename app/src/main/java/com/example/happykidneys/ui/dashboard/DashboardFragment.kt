@@ -2,10 +2,6 @@ package com.example.happykidneys.ui.dashboard
 
 import android.content.Context
 import android.graphics.Color
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,12 +23,15 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+// Import Wearable API
+import com.google.android.gms.wearable.PutDataMapRequest
+import com.google.android.gms.wearable.Wearable
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DashboardFragment : Fragment(), SensorEventListener {
+class DashboardFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
@@ -41,20 +40,6 @@ class DashboardFragment : Fragment(), SensorEventListener {
     private lateinit var preferenceManager: PreferenceManager
     private lateinit var intakeAdapter: WaterIntakeAdapter
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
-    // Sensor Properties
-    private lateinit var sensorManager: SensorManager
-    private var rotationSensor: Sensor? = null
-    private val rotationMatrix = FloatArray(9)
-    private val orientationAngles = FloatArray(3)
-
-    // --- FIX: Initialize sensors in onCreate ---
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // Initialize these early so they are ready before onResume/onPause
-        sensorManager = requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -89,46 +74,10 @@ class DashboardFragment : Fragment(), SensorEventListener {
         super.onResume()
         loadData()
 
-        // Only register if setting is enabled AND sensorManager is initialized
-        if (::sensorManager.isInitialized && preferenceManager.isWaterRotationEnabled()) {
-            rotationSensor?.let {
-                sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_UI)
-            }
-        } else if (::sensorManager.isInitialized && !preferenceManager.isWaterRotationEnabled()) {
-            // If disabled, reset to flat
-            if (_binding != null) { // Check binding too
-                binding.fillingGlassView.setPhoneRotation(0f)
-            }
+        // Re-apply rotation setting (if you kept that feature)
+        if (!preferenceManager.isWaterRotationEnabled()) {
+            binding.fillingGlassView.setPhoneRotation(0f)
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        // --- FIX: Safety check to prevent crash ---
-        if (::sensorManager.isInitialized) {
-            sensorManager.unregisterListener(this)
-        }
-    }
-
-    override fun onSensorChanged(event: SensorEvent?) {
-        // Double check preference
-        if (!preferenceManager.isWaterRotationEnabled()) return
-
-        if (event?.sensor?.type == Sensor.TYPE_ROTATION_VECTOR) {
-            SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
-            SensorManager.getOrientation(rotationMatrix, orientationAngles)
-
-            val roll = orientationAngles[2] // Side-to-side tilt
-
-            // Check binding before using it (in case view is destroyed but sensor is live)
-            if (_binding != null) {
-                binding.fillingGlassView.setPhoneRotation(roll * 0.8f)
-            }
-        }
-    }
-
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        // Not needed
     }
 
     private fun setupRecyclerView() {
@@ -181,13 +130,16 @@ class DashboardFragment : Fragment(), SensorEventListener {
         lifecycleScope.launch {
             waterIntakeRepository.getTotalForDate(userId, today).collect { total ->
                 val currentTotal = total ?: 0f
-                // Check binding to avoid crashes if view is destroyed
+
                 if (_binding != null) {
                     binding.tvTodayConsumption.text = String.format("%.1f L", currentTotal)
 
                     val percentage = (currentTotal / dailyGoal * 100).toInt()
                     binding.tvGoalProgress.text = "$percentage% of ${dailyGoal}L goal"
                     binding.fillingGlassView.setPercentage(percentage)
+
+                    // --- SEND TO WATCH ---
+                    sendWaterToWatch(currentTotal)
                 }
             }
         }
@@ -200,6 +152,22 @@ class DashboardFragment : Fragment(), SensorEventListener {
 
         loadWeeklyData(userId)
         loadStreakData(userId)
+    }
+
+    // --- HELPER TO SEND DATA TO WATCH ---
+    private fun sendWaterToWatch(totalLiters: Float) {
+        val dataClient = Wearable.getDataClient(requireContext())
+
+        val putDataReq = PutDataMapRequest.create("/water_intake").apply {
+            dataMap.putFloat("total_liters", totalLiters)
+            // Add timestamp to insure the event triggers every time
+            dataMap.putLong("timestamp", System.currentTimeMillis())
+        }
+
+        val putDataRequest = putDataReq.asPutDataRequest()
+        putDataRequest.setUrgent() // Send immediately
+
+        dataClient.putDataItem(putDataRequest)
     }
 
     private fun loadWeeklyData(userId: Long) {
@@ -237,23 +205,20 @@ class DashboardFragment : Fragment(), SensorEventListener {
             val todayString = dateFormat.format(calendar.time)
 
             if (_binding != null) {
-                if (goalMap[todayString]?.achieved == false) {
-                    binding.tvStreak.text = "0"
-                    return@launch
+                if (goalMap[todayString]?.achieved == true) {
+                    streakCount++
                 }
 
                 for (i in 0..365) {
+                    calendar.add(Calendar.DAY_OF_YEAR, -1)
                     val dateString = dateFormat.format(calendar.time)
                     val goal = goalMap[dateString]
 
                     if (goal != null && goal.achieved) {
                         streakCount++
-                    } else if (goal == null && i == 0) {
-                        // Today, no goal logged yet
                     } else {
                         break
                     }
-                    calendar.add(Calendar.DAY_OF_YEAR, -1)
                 }
                 binding.tvStreak.text = streakCount.toString()
             }

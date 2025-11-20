@@ -12,13 +12,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.airbnb.lottie.LottieAnimationView
 import com.example.happykidneys.R
 import com.example.happykidneys.databinding.ActivityOnboardingBinding
 import com.example.happykidneys.ui.auth.AuthActivity
 import com.example.happykidneys.utils.PreferenceManager
 
 data class OnboardingItem(
-    val image: Int,
+    val animationRes: Int, // Changed from 'image' to 'animationRes'
     val title: String,
     val description: String
 )
@@ -27,8 +28,6 @@ class OnboardingActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityOnboardingBinding
     private lateinit var preferenceManager: PreferenceManager
-
-    // Move this inside onCreate - don't initialize at class level!
     private lateinit var onboardingItems: List<OnboardingItem>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,20 +37,20 @@ class OnboardingActivity : AppCompatActivity() {
 
         preferenceManager = PreferenceManager(this)
 
-        // Initialize onboarding items HERE, after context is available
+        // Using Lottie JSON files from res/raw
         onboardingItems = listOf(
             OnboardingItem(
-                R.drawable.ic_onboarding_1,
+                R.raw.ic_onboarding_1, // Ensure these files exist in res/raw
                 getString(R.string.onboarding_title_1),
                 getString(R.string.onboarding_desc_1)
             ),
             OnboardingItem(
-                R.drawable.ic_onboarding_2,
+                R.raw.ic_onboarding_2,
                 getString(R.string.onboarding_title_2),
                 getString(R.string.onboarding_desc_2)
             ),
             OnboardingItem(
-                R.drawable.ic_onboarding_3,
+                R.raw.ic_onboarding_3,
                 getString(R.string.onboarding_title_3),
                 getString(R.string.onboarding_desc_3)
             )
@@ -141,6 +140,7 @@ class OnboardingAdapter(private val items: List<OnboardingItem>) :
     RecyclerView.Adapter<OnboardingAdapter.OnboardingViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OnboardingViewHolder {
+        // Ensure this inflates the new XML with LottieAnimationView
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_onboarding, parent, false)
         return OnboardingViewHolder(view)
@@ -153,12 +153,13 @@ class OnboardingAdapter(private val items: List<OnboardingItem>) :
     override fun getItemCount() = items.size
 
     class OnboardingViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val ivIllustration: ImageView = view.findViewById(R.id.ivIllustration)
+        private val lottieAnimationView: LottieAnimationView = view.findViewById(R.id.lottieAnimationView)
         private val tvTitle: TextView = view.findViewById(R.id.tvTitle)
         private val tvDescription: TextView = view.findViewById(R.id.tvDescription)
 
         fun bind(item: OnboardingItem) {
-            ivIllustration.setImageResource(item.image)
+            lottieAnimationView.setAnimation(item.animationRes)
+            lottieAnimationView.playAnimation()
             tvTitle.text = item.title
             tvDescription.text = item.description
         }

@@ -79,6 +79,8 @@ dependencies {
 
     implementation("androidx.fragment:fragment-ktx:1.8.2")
 
+    implementation("com.google.android.gms:play-services-wearable:18.1.0")
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

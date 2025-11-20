@@ -1,6 +1,5 @@
 package com.example.happykidneys.utils
 
-
 import android.content.Context
 import androidx.work.*
 import com.example.happykidneys.worker.HydrationReminderWorker
@@ -13,16 +12,18 @@ object NotificationScheduler {
             .setRequiresBatteryNotLow(false)
             .build()
 
+        // WorkManager minimum interval is 15 minutes.
+        val safeInterval = if (intervalHours < 1) 1 else intervalHours
+
         val reminderRequest = PeriodicWorkRequestBuilder<HydrationReminderWorker>(
-            intervalHours.toLong(), TimeUnit.HOURS
+            safeInterval.toLong(), TimeUnit.HOURS
         )
             .setConstraints(constraints)
-            .setInitialDelay(intervalHours.toLong(), TimeUnit.HOURS)
             .build()
 
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
             HydrationReminderWorker.WORK_NAME,
-            ExistingPeriodicWorkPolicy.REPLACE,
+            ExistingPeriodicWorkPolicy.UPDATE, // Changed to UPDATE to persist schedule
             reminderRequest
         )
     }
